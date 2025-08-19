@@ -2,7 +2,31 @@ import torch
 import torch.nn as nn
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
+from torch.nn.utils.rnn import pad_sequence
 from typing import Tuple
+
+
+def collect_fn(batch):
+    """
+    自定义的 collate 函数，用于处理不同长度的序列
+    """
+    # 分离输入和标签
+    x, y = zip(*batch)
+
+    # 获取每个序列的长度
+    lengths = torch.tensor([len(seq) for seq in x])
+
+    # 按长度降序排序（这对RNN处理很重要）
+    lengths, sorted_idx = torch.sort(lengths, descending=True)
+    x = [x[i] for i in sorted_idx]
+    y = torch.tensor([y[i] for i in sorted_idx])
+    
+    # 填充序列
+    # 注意：pad_sequence默认返回 [seq_len, batch_size, input_size]
+    # 我们使用batch_first=True来得到 [batch_size, seq_len, input_size]
+    padded_x = pad_sequence(x, batch_first=True)
+    
+    return padded_x, y, lengths
 
 
 def train_fn(
@@ -25,25 +49,18 @@ def train_fn(
     # 设置模型为训练模式
     model.train()
 
-    # 初始化损失和准确率列表
-    losses = []
-    accs = []
-
     # 初始化损失和准确率
     running_loss = 0.0
     correct = 0
     total = 0
 
     # 遍历数据加载器中的每个批次
-    for x, y in dataloader:
+    for x, y, length in dataloader:
         # 将数据移动到指定的设备上
-        x, y = x.to(device), y.to(device)
-
-        # 初始化隐藏层并移动到设备上
-        h0 = model.init_hidden().to(device)
+        x, y, length = x.to(device), y.to(device), length.to(device)
 
         # 前向传播
-        y_pred, _ = model(x, h0)
+        y_pred, _ = model(x, length)
 
         # 计算损失
         loss = criterion(y_pred, y)
@@ -93,15 +110,12 @@ def val_fn(model: nn.Module, dataloader: DataLoader, criterion: nn.Module, devic
     # 不计算梯度
     with torch.no_grad():
         # 遍历数据加载器中的每个批次
-        for x, y in dataloader:
+        for x, y, length in dataloader:
             # 将数据移动到指定的设备上
-            x, y = x.to(device), y.to(device)
-
-            # 初始化隐藏层并移动到设备上
-            h0 = model.init_hidden().to(device)
+            x, y, length = x.to(device), y.to(device), length.to(device)
 
             # 前向传播
-            y_pred, _ = model(x, h0)
+            y_pred, _ = model(x, length)
 
             # 计算损失
             loss = criterion(y_pred, y)

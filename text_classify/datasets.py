@@ -5,8 +5,6 @@ import string
 from typing import List, Tuple, Optional
 from torch.utils.data import Dataset
 
-
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 ONEHOT_LETTER = string.ascii_letters + " .,;'"
 ONEHOT_DIM = len(ONEHOT_LETTER)
 CATEGORIES = [
@@ -33,7 +31,7 @@ class NameClassDataset(Dataset):
         x_tensor = self.str_to_onehot(x)
         y_tensor = torch.tensor(
             CATEGORIES.index(y), dtype=torch.long
-        ).to(DEVICE)
+        )
 
         return x_tensor, y_tensor
         
@@ -44,7 +42,7 @@ class NameClassDataset(Dataset):
         for i, char in enumerate(x):
             onehot[i][ONEHOT_LETTER.index(char)] = 1
 
-        return onehot.to(DEVICE)
+        return onehot
 
     def __len__(self):
         return len(self.x) if self.x is not None else 0

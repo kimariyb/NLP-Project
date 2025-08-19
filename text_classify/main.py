@@ -4,7 +4,7 @@ import torch.nn as nn
 
 from datasets import NameClassDataset, ONEHOT_DIM, CATEGORIES_DIM
 from models import MyRNN, MyLSTM, MyGRU
-from train import train_fn, val_fn
+from train import train_fn, val_fn, collect_fn
 from torch.utils.data import DataLoader, random_split
 from torch.optim import AdamW
 from tqdm import tqdm
@@ -38,10 +38,18 @@ def main():
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
     # 创建数据加载器
     train_dataloader = DataLoader(
-        train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=8
+        train_dataset, 
+        batch_size=BATCH_SIZE, 
+        collate_fn=collect_fn, 
+        shuffle=True, 
+        num_workers=8
     )
     val_dataloader = DataLoader(
-        val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=8
+        val_dataset, 
+        batch_size=BATCH_SIZE, 
+        collate_fn=collect_fn, 
+        shuffle=False, 
+        num_workers=8
     )
 
     # 实例化模型

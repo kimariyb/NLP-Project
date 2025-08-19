@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 
 class MyRNN(nn.Module):
@@ -10,29 +11,24 @@ class MyRNN(nn.Module):
         self.output_size = output_size
         self.num_layers = num_layers
 
-        self.rnn = nn.RNN(input_size, hidden_size, num_layers)
+        self.rnn = nn.RNN(input_size, hidden_size, num_layers, batch_first=True)
         self.fc = nn.Linear(hidden_size, output_size)
-        self.softmax = nn.LogSoftmax(dim=-1)
+        self.softmax = nn.LogSoftmax(-1)
     
-    def forward(self, x: torch.Tensor, h0: torch.Tensor):
-        """
-        x: [seq_len, batch_size, input_size]
-        h0: [num_layers, batch_size, hidden_size]
-        """
-        x = x.unsqueeze(1) 
-        # 1. 特征提取
-        xn, hn = self.rnn(x, h0)
-        xn = xn[-1]
-        # 2. 全连接层
-        out = self.fc(xn)
-        # 3. softmax
+    def forward(self, x: torch.Tensor, lengths: torch.Tensor):
+        # x: [batch_size, seq_len, input_size]
+        # lengths: [batch_size] 每个序列的实际长度
+        # pack_padded_sequence 将输入序列进行打包，以减少不必要的计算
+        packed_x = pack_padded_sequence(x, lengths.cpu(), batch_first=True)
+        out, _ = self.rnn(packed_x)
+
+        # pad_packed_sequence 将打包后的序列进行解包，以恢复原始的序列长度
+        out, _ = pad_packed_sequence(out, batch_first=True)
+        last_out = out[torch.arange(out.size(0)), lengths - 1]
+        out = self.fc(last_out)
         out = self.softmax(out)
-        return out, hn
-    
-    def init_hidden(self):
-        # 初始化隐藏层
-        return torch.zeros(self.num_layers, 1, self.hidden_size)
-    
+        return out
+
 
 class MyLSTM(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, num_layers=1):
@@ -42,26 +38,23 @@ class MyLSTM(nn.Module):
         self.output_size = output_size
         self.num_layers = num_layers
 
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
         self.fc = nn.Linear(hidden_size, output_size)
         self.softmax = nn.LogSoftmax(dim=-1)
 
-    def forward(self, x: torch.Tensor, h0: torch.Tensor, c0: torch.Tensor):
+    def forward(self, x: torch.Tensor, lengths: torch.Tensor):
         """
-        x: [seq_len, batch_size, input_size]
-        h0: [num_layers, batch_size, hidden_size]
-        c0: [num_layers, batch_size, hidden_size]
+        x: [batch_size, seq_len, input_size]
+        lengths: [batch_size] 每个序列的实际长度
         """                    
-        x = x.unsqueeze(1)
-        xn, (hn, cn) = self.lstm(x, (h0, c0))
-        xn = xn[-1]
-        out = self.fc(xn)
-        out = self.softmax(out)
-        return out, (hn, cn)
+        packed_x = pack_padded_sequence(x, lengths.cpu(), batch_first=True)
+        out, _ = self.lstm(packed_x)
 
-    def init_hidden(self):
-        # 初始化隐藏层
-        return torch.zeros(self.num_layers, 1, self.hidden_size), torch.zeros(self.num_layers, 1, self.hidden_size)
+        out, _ = pad_packed_sequence(out, batch_first=True)
+        last_out = out[torch.arange(out.size(0)), lengths - 1]
+        out = self.fc(last_out)
+        out = self.softmax(out)
+        return out
     
 
 class MyGRU(nn.Module):
@@ -72,25 +65,23 @@ class MyGRU(nn.Module):
         self.output_size = output_size
         self.num_layers = num_layers
 
-        self.gru = nn.GRU(input_size, hidden_size, num_layers)
+        self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True)
         self.fc = nn.Linear(hidden_size, output_size)
         self.softmax = nn.LogSoftmax(dim=-1)
 
-    def forward(self, x: torch.Tensor, h0: torch.Tensor):
+    def forward(self, x: torch.Tensor, lengths: torch.Tensor):
         """
-        x: [seq_len, batch_size, input_size]
-        h0: [num_layers, batch_size, hidden_size]
+        x: [batch_size, seq_len, input_size]
+        lengths: [batch_size] 每个序列的实际长度
         """
-        x = x.unsqueeze(1)
-        xn, hn = self.gru(x, h0)
-        xn = xn[-1]
-        out = self.fc(xn)
-        out = self.softmax(out)
-        return out, hn
+        packed_x = pack_padded_sequence(x, lengths.cpu(), batch_first=True)
+        out, _ = self.gru(packed_x)
 
-    def init_hidden(self):
-        # 初始化隐藏层
-        return torch.zeros(self.num_layers, 1, self.hidden_size)
+        out, _ = pad_packed_sequence(out, batch_first=True)
+        last_out = out[torch.arange(out.size(0)), lengths - 1]
+        out = self.fc(last_out)
+        out = self.softmax(out)
+        return out
 
 
 if __name__ == '__main__':
