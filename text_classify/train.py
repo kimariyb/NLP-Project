@@ -60,7 +60,7 @@ def train_fn(
         x, y, length = x.to(device), y.to(device), length.to(device)
 
         # 前向传播
-        y_pred, _ = model(x, length)
+        y_pred = model(x, length)
 
         # 计算损失
         loss = criterion(y_pred, y)
@@ -115,7 +115,7 @@ def val_fn(model: nn.Module, dataloader: DataLoader, criterion: nn.Module, devic
             x, y, length = x.to(device), y.to(device), length.to(device)
 
             # 前向传播
-            y_pred, _ = model(x, length)
+            y_pred = model(x, length)
 
             # 计算损失
             loss = criterion(y_pred, y)

@@ -12,11 +12,11 @@ from tqdm import tqdm
 
 # 自定义超参数
 EPOCHS = 100
-LEARNING_RATE = 1e-3
-BATCH_SIZE = 64
+LEARNING_RATE = 2e-4
+BATCH_SIZE = 256
 MODEL_NAME = 'RNN'
 HIDDEN_DIM = 128
-NUM_LAYERS = 3
+NUM_LAYERS = 1
 
 # 设置单卡
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -94,7 +94,7 @@ def main():
     ):
         # 首先训练模型
         train_loss, train_acc = train_fn(
-            model, train_dataloader, optimizer, criterion, DEVICE
+            model, train_dataloader, criterion, optimizer, DEVICE
         )
         # 然后验证模型
         val_loss, val_acc = val_fn(model, val_dataloader, criterion, DEVICE)
