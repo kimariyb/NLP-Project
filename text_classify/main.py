@@ -17,7 +17,9 @@ BATCH_SIZE = 64
 MODEL_NAME = 'RNN'
 HIDDEN_DIM = 128
 NUM_LAYERS = 3
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# 设置单卡
+DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 
 def main():
