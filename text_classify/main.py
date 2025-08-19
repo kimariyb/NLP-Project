@@ -21,6 +21,9 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def main():
+    # 打印将要训练用的的设备
+    print(f"Using device: {DEVICE}")
+
     # 首先读取数据集
     x_list, y_list = NameClassDataset.read_data("./data/name_classfication.txt")
     dataset = NameClassDataset(
