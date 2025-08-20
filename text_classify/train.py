@@ -6,7 +6,7 @@ from torch.nn.utils.rnn import pad_sequence
 from typing import Tuple
 
 
-def collect_fn(batch):
+def collect_fn(batch) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """
     自定义的 collate 函数，用于处理不同长度的序列
     """
@@ -16,7 +16,7 @@ def collect_fn(batch):
     # 获取每个序列的长度
     lengths = torch.tensor([len(seq) for seq in x])
 
-    # 按长度降序排序（这对RNN处理很重要）
+    # 按长度降序排序（这对 RNN 处理很重要）
     lengths, sorted_idx = torch.sort(lengths, descending=True)
     x = [x[i] for i in sorted_idx]
     y = torch.tensor([y[i] for i in sorted_idx])

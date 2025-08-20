@@ -48,6 +48,8 @@ class NameClassDataset(Dataset):
         return len(self.x) if self.x is not None else 0
 
     def __getitem__(self, idx):
+        if self.x is None or self.y is None:
+            raise ValueError("Dataset not initialized with data. Please provide x and y when creating the dataset.")
         tensor_x, tensor_y = self.transform(self.x[idx], self.y[idx])
         return tensor_x, tensor_y
         

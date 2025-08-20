@@ -19,12 +19,16 @@ class MyRNN(nn.Module):
         # x: [batch_size, seq_len, input_size]
         # lengths: [batch_size] 每个序列的实际长度
         # pack_padded_sequence 将输入序列进行打包，以减少不必要的计算
-        packed_x = pack_padded_sequence(x, lengths.cpu(), batch_first=True)
-        out, _ = self.rnn(packed_x)
+        packed_x = pack_padded_sequence(
+            input=x, 
+            lengths=lengths.cpu(),
+            batch_first=True
+        ) # [batch_size, seq_len, input_size] 
+        out, _ = self.rnn(packed_x) # [batch_size, seq_len, hidden_size]
 
         # pad_packed_sequence 将打包后的序列进行解包，以恢复原始的序列长度
-        out, _ = pad_packed_sequence(out, batch_first=True)
-        last_out = out[torch.arange(out.size(0)), lengths - 1]
+        out, _ = pad_packed_sequence(out, batch_first=True) # [batch_size, seq_len, hidden_size]
+        last_out = out[torch.arange(out.size(0)), lengths - 1] # [batch_size, hidden_size]
         out = self.fc(last_out)
         out = self.softmax(out)
         return out
