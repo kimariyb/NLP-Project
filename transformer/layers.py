@@ -12,7 +12,7 @@ class PositionalEncoding(nn.Module):
 
     Args:
         hidden_size: 模型维度
-        dropout_rate: dropout率
+        dropout_rate: dropout 率
         max_len: 最大序列长度
     """
     def __init__(self, hidden_size, dropout_rate, max_len=512):

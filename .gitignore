@@ -207,4 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 #  Add any other files that should be ignored
-chinese_poetry/data/
+toutiao/data/*
