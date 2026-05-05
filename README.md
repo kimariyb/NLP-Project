@@ -1,4 +1,4 @@
-# NLP-Project
+# NLP Project
 
 ## Text Classify
 
