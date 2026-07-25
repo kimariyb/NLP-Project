@@ -1,0 +1,32 @@
+MODEL: RNN
+Best val_acc @ epoch: 98 (0.6612)
+Accuracy : 0.6612
+Precision: weighted=0.7704  macro=0.3901
+Recall   : weighted=0.6612  macro=0.5507
+F1       : weighted=0.6868  macro=0.4276
+
+Classification report:
+              precision    recall  f1-score   support
+
+     Italian       0.64      0.61      0.62       142
+     English       0.73      0.30      0.42       734
+      Arabic       0.79      0.94      0.86       400
+     Spanish       0.27      0.42      0.33        60
+    Scottish       0.06      0.30      0.09        20
+       Irish       0.22      0.65      0.33        46
+     Chinese       0.49      0.67      0.57        54
+  Vietnamese       0.29      0.67      0.41        15
+    Japanese       0.72      0.84      0.77       198
+      French       0.19      0.58      0.28        55
+       Greek       0.32      0.78      0.45        41
+       Dutch       0.19      0.41      0.26        59
+      Korean       0.21      0.32      0.25        19
+      Polish       0.30      0.57      0.39        28
+  Portuguese       0.06      0.20      0.09        15
+     Russian       0.97      0.78      0.87      1882
+       Czech       0.24      0.44      0.31       104
+      German       0.34      0.43      0.38       145
+
+    accuracy                           0.66      4017
+   macro avg       0.39      0.55      0.43      4017
+weighted avg       0.77      0.66      0.69      4017

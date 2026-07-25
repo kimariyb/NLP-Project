@@ -28,7 +28,7 @@ class MyRNN(nn.Module):
 
         # pad_packed_sequence 将打包后的序列进行解包，以恢复原始的序列长度
         out, _ = pad_packed_sequence(out, batch_first=True) # [batch_size, seq_len, hidden_size]
-        last_out = out[torch.arange(out.size(0)), lengths - 1] # [batch_size, hidden_size]
+        last_out = out[torch.arange(out.size(0), device=out.device), lengths - 1] # [batch_size, hidden_size]
         out = self.fc(last_out)
         out = self.softmax(out)
         return out
@@ -55,7 +55,7 @@ class MyLSTM(nn.Module):
         out, _ = self.lstm(packed_x)
 
         out, _ = pad_packed_sequence(out, batch_first=True)
-        last_out = out[torch.arange(out.size(0)), lengths - 1]
+        last_out = out[torch.arange(out.size(0), device=out.device), lengths - 1]
         out = self.fc(last_out)
         out = self.softmax(out)
         return out
@@ -82,7 +82,7 @@ class MyGRU(nn.Module):
         out, _ = self.gru(packed_x)
 
         out, _ = pad_packed_sequence(out, batch_first=True)
-        last_out = out[torch.arange(out.size(0)), lengths - 1]
+        last_out = out[torch.arange(out.size(0), device=out.device), lengths - 1]
         out = self.fc(last_out)
         out = self.softmax(out)
         return out

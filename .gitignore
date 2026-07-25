@@ -208,3 +208,7 @@ __marimo__/
 
 #  Add any other files that should be ignored
 toutiao/data/*
+
+.workbuddy/
+
+*.pth

@@ -15,7 +15,7 @@ if __name__ == '__main__':
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()
-    plt.savefig('loss.png')
+    plt.savefig('./img/loss.png')
     plt.show()
 
     # 绘制训练集和验证集的准确率曲线
@@ -25,5 +25,5 @@ if __name__ == '__main__':
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.legend()
-    plt.savefig('acc.png')
+    plt.savefig('./img/acc.png')
     plt.show()

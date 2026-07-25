@@ -1,0 +1,32 @@
+MODEL: LSTM
+Best val_acc @ epoch: 96 (0.6928)
+Accuracy : 0.6928
+Precision: weighted=0.7789  macro=0.4136
+Recall   : weighted=0.6928  macro=0.5636
+F1       : weighted=0.7192  macro=0.4557
+
+Classification report:
+              precision    recall  f1-score   support
+
+     Italian       0.65      0.67      0.66       142
+     English       0.72      0.40      0.52       734
+      Arabic       0.79      0.90      0.84       400
+     Spanish       0.32      0.42      0.36        60
+    Scottish       0.02      0.10      0.03        20
+       Irish       0.31      0.65      0.42        46
+     Chinese       0.48      0.63      0.54        54
+  Vietnamese       0.24      0.60      0.34        15
+    Japanese       0.72      0.83      0.77       198
+      French       0.14      0.45      0.22        55
+       Greek       0.43      0.80      0.56        41
+       Dutch       0.35      0.56      0.43        59
+      Korean       0.20      0.53      0.29        19
+      Polish       0.33      0.61      0.43        28
+  Portuguese       0.10      0.33      0.16        15
+     Russian       0.98      0.82      0.89      1882
+       Czech       0.30      0.42      0.35       104
+      German       0.36      0.41      0.39       145
+
+    accuracy                           0.69      4017
+   macro avg       0.41      0.56      0.46      4017
+weighted avg       0.78      0.69      0.72      4017
